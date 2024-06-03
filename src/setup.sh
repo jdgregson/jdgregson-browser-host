@@ -46,12 +46,14 @@ NEEDRESTART_MODE=a apt-get install --yes \
     nginx
 
 echo "Deploying cloudflared..."
-DEPLOY_DIR=$(mktemp -d)
-curl -L --output "$DEPLOY_DIR/cloudflared.deb" \
-    "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"
-dpkg -i "$DEPLOY_DIR/cloudflared.deb"
+if [[ -z "$(which cloudflared)" ]]; then
+    DEPLOY_DIR=$(mktemp -d)
+    curl -L --output "$DEPLOY_DIR/cloudflared.deb" \
+        "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"
+    dpkg -i "$DEPLOY_DIR/cloudflared.deb"
+    rm -fr "$DEPLOY_DIR"
+fi
 cloudflared service install "$CLOUDFLARED_TOKEN"
-rm -fr "$DEPLOY_DIR"
 
 echo "Configuring services..."
 systemctl stop nginx
