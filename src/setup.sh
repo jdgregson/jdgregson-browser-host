@@ -56,7 +56,7 @@ ln -T "/opt/$PKG_NAME/src/nginx/nginx.conf" "/etc/nginx/nginx.conf"
 systemctl start nginx
 
 gecho "Starting browser..."
-sudo -H "/opt/$PKG_NAME/src/browser/init.sh"
+sudo su "$PODMAN_USER" --shell /bin/bash --login -c "/opt/$PKG_NAME/src/browser/start.sh"
 cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh"
 if [[ -z "$(grep "$PKG_NAME" /etc/crontab)" ]]; then
     echo "$cron_line" >> /etc/crontab
