@@ -30,7 +30,8 @@ if [ -d "/opt/$PKG_NAME" ]; then
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
 
-gecho "Creating TLS certificate..."
+gecho "Generating self-signed TLS certificate..."
+mkdir "/opt/$PKG_NAME/src/nginx/ssl"
 openssl req \
   -x509 \
   -newkey rsa:4096 \
