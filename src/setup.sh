@@ -32,6 +32,7 @@ if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
+chmod 755 "/opt/$PKG_NAME/src/browser/init.sh"
 chmod 755 "/opt/$PKG_NAME/src/browser/start.sh"
 chmod 755 "/opt/$PKG_NAME/src/browser/reset.sh"
 
@@ -55,7 +56,7 @@ ln -T "/opt/$PKG_NAME/src/nginx/nginx.conf" "/etc/nginx/nginx.conf"
 systemctl start nginx
 
 gecho "Starting browser..."
-su -c "/opt/$PKG_NAME/src/browser/start.sh" -m "$PODMAN_USER"
+sudo "/opt/$PKG_NAME/src/browser/init.sh"
 cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh"
 if [[ -z "$(grep "$PKG_NAME" /etc/crontab)" ]]; then
     echo "$cron_line" >> /etc/crontab
