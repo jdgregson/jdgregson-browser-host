@@ -1,5 +1,6 @@
 #!/bin/bash
 
+podman rm jdgregson-browser -f
 podman run \
   -d \
   --rm \

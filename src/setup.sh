@@ -24,7 +24,7 @@ echo "Downloading repo..."
 if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
-git clone "https://github.com/jdgregson/$PKG_NAME.git" /opt
+git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
 
 echo "Creating TLS certificate..."
 openssl req \
