@@ -24,14 +24,19 @@ if [ ! -d "/home/$PODMAN_USER" ]; then
 fi
 loginctl enable-linger "$PODMAN_USER"
 
-gecho "Downloading repo..."
+gecho "Downloading $PKG_NAME..."
 if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
 
+gecho "Fixing permissions..."
+chmod 755 "/opt/$PKG_NAME/src/browser/start.sh"
+chmod 755 "/opt/$PKG_NAME/src/browser/reset.sh"
+
 gecho "Generating self-signed TLS certificate..."
 mkdir "/opt/$PKG_NAME/src/nginx/ssl"
+chmod 600 "/opt/$PKG_NAME/src/nginx/ssl"
 openssl req \
   -x509 \
   -newkey rsa:4096 \
@@ -67,7 +72,10 @@ systemctl start nginx
 
 gecho "Starting browser..."
 su -c "/opt/$PKG_NAME/src/browser/start.sh" -m "$PODMAN_USER"
-echo "0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh" >> "/etc/crontab"
+cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh"
+if [[ -z "$(grep "$PKG_NAME" /etc/crontab)" ]]; then
+    echo "$cron_line" >> /etc/crontab
+fi
 
 gecho "Setting firewall rules..."
 ufw deny 5000
