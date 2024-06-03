@@ -8,25 +8,29 @@ PODMAN_USER="jdgregson-browser-user"
 SVC_HOST_NAME="browser.jdgregson.com"
 PKG_NAME="jdgregson-browser-host"
 
+# Green and red echo
+gecho() { echo -e "\033[1;32m$1\033[0m"; }
+recho() { echo -e "\033[1;31m$1\033[0m"; }
+
 if [ ! -f "/etc/lsb-release" ] || [ -z "$(grep '22.04' /etc/lsb-release)" ]; then
-    echo "ERROR: $PKG_NAME only supports Ubuntu Server 22.04"
+    recho "ERROR: $PKG_NAME only supports Ubuntu Server 22.04"
     exit 1
 fi
 
-echo "Creating and configuring user..."
+gecho "Creating and configuring user..."
 if [ ! -d "/home/$PODMAN_USER" ]; then
-    echo "Creating user $PODMAN_USER..."
+    gecho "Creating user $PODMAN_USER..."
     useradd -m "$PODMAN_USER"
 fi
 loginctl enable-linger "$PODMAN_USER"
 
-echo "Downloading repo..."
+gecho "Downloading repo..."
 if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
 
-echo "Creating TLS certificate..."
+gecho "Creating TLS certificate..."
 openssl req \
   -x509 \
   -newkey rsa:4096 \
@@ -37,15 +41,14 @@ openssl req \
   -nodes \
   -subj "/C=US/ST=Washington/L=Seattle/O=jdgregson/OU=InfrastructureEngineering/CN=$SVC_HOST_NAME"
 
-echo "Installing updates and dependencies..."
+gecho "Installing updates and dependencies..."
 apt-get update
 NEEDRESTART_MODE=a apt-get upgrade --yes
 NEEDRESTART_MODE=a apt-get install --yes \
-    unattended-upgrades \
     podman \
     nginx
 
-echo "Deploying cloudflared..."
+gecho "Deploying cloudflared..."
 if [[ -z "$(which cloudflared)" ]]; then
     DEPLOY_DIR=$(mktemp -d)
     curl -L --output "$DEPLOY_DIR/cloudflared.deb" \
@@ -55,16 +58,16 @@ if [[ -z "$(which cloudflared)" ]]; then
 fi
 cloudflared service install "$CLOUDFLARED_TOKEN"
 
-echo "Configuring services..."
+gecho "Configuring services..."
 systemctl stop nginx
 rm "/etc/nginx/nginx.conf"
 ln -T "/opt/$PKG_NAME/nginx/nginx.conf" "/etc/nginx/nginx.conf"
 systemctl start nginx
 
-echo "Starting browser..."
+gecho "Starting browser..."
 su -c "/opt/$PKG_NAME/browser/start.sh" -m "$PODMAN_USER"
-echo "0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/browser/reset.sh"
+echo "0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/browser/reset.sh" >> "/etc/crontab"
 
-echo "Setting firewall rules..."
+gecho "Setting firewall rules..."
 ufw deny 5000
 ufw deny 6901
