@@ -3,6 +3,7 @@
 if [[ -z "${CLOUDFLARED_TOKEN}" ]]; then
     read -p "Enter Cloudflared token: " CLOUDFLARED_TOKEN
 fi
+echo $CLOUDFLARED_TOKEN
 
 PODMAN_USER="jdgregson-browser-user"
 SVC_HOST_NAME="browser.jdgregson.com"
@@ -61,8 +62,10 @@ if [[ -z "$(which cloudflared)" ]]; then
         "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"
     dpkg -i "$DEPLOY_DIR/cloudflared.deb"
     rm -fr "$DEPLOY_DIR"
+else
+    cloudflared service uninstall
 fi
-cloudflared service install "$CLOUDFLARED_TOKEN"
+cloudflared service install $CLOUDFLARED_TOKEN
 
 gecho "Configuring services..."
 systemctl stop nginx
