@@ -1,9 +1,11 @@
 #!/bin/bash
 
-if [[ -z "${CLOUDFLARED_TOKEN}" ]]; then
+if [[ -z "${1}" ]]; then
     read -p "Enter Cloudflared token: " CLOUDFLARED_TOKEN
+else
+    CLOUDFLARED_TOKEN=$1
 fi
-echo $CLOUDFLARED_TOKEN
+echo ">>$CLOUDFLARED_TOKEN<<"
 
 PODMAN_USER="jdgregson-browser-user"
 SVC_HOST_NAME="browser.jdgregson.com"
