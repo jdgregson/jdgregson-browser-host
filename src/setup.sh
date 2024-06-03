@@ -34,8 +34,8 @@ gecho "Creating TLS certificate..."
 openssl req \
   -x509 \
   -newkey rsa:4096 \
-  -keyout "/opt/$PKG_NAME/nginx/ssl/$SVC_HOST_NAME.key" \
-  -out "/opt/$PKG_NAME/nginx/ssl/$SVC_HOST_NAME.crt" \
+  -keyout "/opt/$PKG_NAME/src/nginx/ssl/$SVC_HOST_NAME.key" \
+  -out "/opt/$PKG_NAME/src/nginx/ssl/$SVC_HOST_NAME.crt" \
   -sha256 \
   -days 3650 \
   -nodes \
@@ -61,12 +61,12 @@ cloudflared service install "$CLOUDFLARED_TOKEN"
 gecho "Configuring services..."
 systemctl stop nginx
 rm "/etc/nginx/nginx.conf"
-ln -T "/opt/$PKG_NAME/nginx/nginx.conf" "/etc/nginx/nginx.conf"
+ln -T "/opt/$PKG_NAME/src/nginx/nginx.conf" "/etc/nginx/nginx.conf"
 systemctl start nginx
 
 gecho "Starting browser..."
-su -c "/opt/$PKG_NAME/browser/start.sh" -m "$PODMAN_USER"
-echo "0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/browser/reset.sh" >> "/etc/crontab"
+su -c "/opt/$PKG_NAME/src/browser/start.sh" -m "$PODMAN_USER"
+echo "0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh" >> "/etc/crontab"
 
 gecho "Setting firewall rules..."
 ufw deny 5000
