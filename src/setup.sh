@@ -1,12 +1,5 @@
 #!/bin/bash
 
-if [[ -z "${1}" ]]; then
-    read -p "Enter Cloudflared token: " CLOUDFLARED_TOKEN
-else
-    CLOUDFLARED_TOKEN=$1
-fi
-echo ">>$CLOUDFLARED_TOKEN<<"
-
 PODMAN_USER="jdgregson-browser-user"
 SVC_HOST_NAME="browser.jdgregson.com"
 PKG_NAME="jdgregson-browser-host"
@@ -20,7 +13,14 @@ if [ ! -f "/etc/lsb-release" ] || [ -z "$(grep '22.04' /etc/lsb-release)" ]; the
     exit 1
 fi
 
-gecho "Creating and configuring user..."
+gecho "Installing updates and dependencies..."
+apt-get update
+NEEDRESTART_MODE=a apt-get upgrade --yes
+NEEDRESTART_MODE=a apt-get install --yes \
+    podman \
+    nginx
+
+gecho "Creating and configuring Podman user..."
 if [ ! -d "/home/$PODMAN_USER" ]; then
     gecho "Creating user $PODMAN_USER..."
     useradd -m "$PODMAN_USER"
@@ -32,8 +32,6 @@ if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
-
-gecho "Fixing permissions..."
 chmod 755 "/opt/$PKG_NAME/src/browser/start.sh"
 chmod 755 "/opt/$PKG_NAME/src/browser/reset.sh"
 
@@ -49,25 +47,6 @@ openssl req \
   -days 3650 \
   -nodes \
   -subj "/C=US/ST=Washington/L=Seattle/O=jdgregson/OU=InfrastructureEngineering/CN=$SVC_HOST_NAME"
-
-gecho "Installing updates and dependencies..."
-apt-get update
-NEEDRESTART_MODE=a apt-get upgrade --yes
-NEEDRESTART_MODE=a apt-get install --yes \
-    podman \
-    nginx
-
-gecho "Deploying cloudflared..."
-if [[ -z "$(which cloudflared)" ]]; then
-    DEPLOY_DIR=$(mktemp -d)
-    curl -L --output "$DEPLOY_DIR/cloudflared.deb" \
-        "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"
-    dpkg -i "$DEPLOY_DIR/cloudflared.deb"
-    rm -fr "$DEPLOY_DIR"
-else
-    cloudflared service uninstall
-fi
-cloudflared service install $CLOUDFLARED_TOKEN
 
 gecho "Configuring services..."
 systemctl stop nginx
@@ -85,3 +64,17 @@ fi
 gecho "Setting firewall rules..."
 ufw deny 5000
 ufw deny 6901
+
+if [[ "${1}" ]]; then
+    if [[ -z "$(which cloudflared)" ]]; then
+        gecho "Installing cloudflared..."
+        INSTALL_DIR=$(mktemp -d)
+        curl -L --output "$INSTALL_DIR/cloudflared.deb" \
+            "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"
+        dpkg -i "$INSTALL_DIR/cloudflared.deb"
+        rm -fr "$INSTALL_DIR"
+    else
+        cloudflared service uninstall
+    fi
+    cloudflared service install $1
+fi
