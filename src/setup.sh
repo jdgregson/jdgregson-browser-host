@@ -56,7 +56,7 @@ systemctl start nginx
 
 gecho "Starting browser..."
 sudo su "$PODMAN_USER" --shell /bin/bash --login -c "/opt/$PKG_NAME/src/browser/start.sh"
-cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/reset.sh"
+cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/start.sh"
 if [[ -z "$(grep "$PKG_NAME" /etc/crontab)" ]]; then
     echo "$cron_line" >> /etc/crontab
 fi
