@@ -15,4 +15,5 @@ podman run \
   -e APP_ARGS="--no-default-browser-check --no-first-run --start-maximized" \
   -e LAUNCH_URL="about:blank" \
   -v /opt/jdgregson-browser-host/src/browser/policies:/etc/opt/chrome/policies/managed \
+  -v /opt/jdgregson-browser-host/src/browser/Default:/home/kasm-default-profile/.config/google-chrome/Default \
   docker.io/kasmweb/chrome:1.15.0-rolling
