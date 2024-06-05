@@ -46,7 +46,7 @@ openssl req \
   -sha256 \
   -days 3650 \
   -nodes \
-  -subj "/C=US/ST=Washington/L=Seattle/O=jdgregson/OU=InfrastructureEngineering/CN=$SVC_HOST_NAME"
+  -subj "/C=US/ST=Washington/L=Seattle/O=jdgregson/OU=Infrastructure Engineering/CN=$SVC_HOST_NAME"
 
 gecho "Configuring services..."
 systemctl stop nginx
