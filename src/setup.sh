@@ -32,7 +32,6 @@ if [ -d "/opt/$PKG_NAME" ]; then
     mv "/opt/$PKG_NAME" "/opt/$PKG_NAME.$(uuidgen)"
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
-chmod 755 "/opt/$PKG_NAME/src/browser/init.sh"
 chmod 755 "/opt/$PKG_NAME/src/browser/start.sh"
 chmod 755 "/opt/$PKG_NAME/src/browser/reset.sh"
 
