@@ -48,7 +48,7 @@
       "provider": "NoBackground",
       "userSelected": true
     },
-    "background_image_type": "off",
+    "background_image_type": "theme",
     "hide_default_top_sites": true,
     "layout_mode": 3,
     "news_feed_display": "off",
