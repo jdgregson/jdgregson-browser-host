@@ -1,5 +1,92 @@
 {
+  "bookmark_bar": {
+    "show_on_all_tabs": false,
+    "show_only_on_ntp": false
+  },
   "browser": {
-    "custom_chrome_frame": true
+    "custom_chrome_frame": true,
+    "prefer_system_light_dark_scheme": false,
+    "show_browser_essentials_hub_pinned": false,
+    "show_edge_split_window_toolbar_button": false,
+    "show_hub_apps_tower_pinned": false,
+    "show_tab_preview": false,
+    "show_toolbar_bookmarks_button": false,
+    "show_toolbar_browser_essentials_button": 0,
+    "show_toolbar_collections_button": false,
+    "show_toolbar_edge_generic_sidebar_button": false,
+    "show_toolbar_vertical_tabs_button": false,
+    "theme": {
+      "follows_system_colors": false
+    },
+    "toolbar_browser_essentials_button_pinned": false,
+    "toolbar_extensions_hub_button_visibility": 0,
+    "underside_chat_bing_signed_in_status": false
+  },
+  "edge": {
+    "can_show_recently_closed_tabs_promotion_for_new_user": false,
+    "super_duper_secure_mode": {
+      "enabled": true,
+      "state": 1,
+      "strict_inprivate": true
+    }
+  },
+  "enhanced_tracking_prevention": {"user_pref": 3},
+  "instrumentation": {
+    "bookmark_bar": {
+      "show_on_all_tabs": "chrome::ToggleBookmarkBarWhenVisible;false",
+      "show_only_on_ntp": "chrome::ToggleBookmarkBarWhenVisible;false"
+    },
+    "ntp": {
+      "layout_mode": "updateLayout;3",
+      "news_feed_display": "extensions::NtpSettingsPrivateSetPrefFunction::Run;off"
+    }
+  },
+  "ntp": {
+    "background_image": {
+      "provider": "NoBackground",
+      "userSelected": true
+    },
+    "background_image_type": "off",
+    "hide_default_top_sites": true,
+    "layout_mode": 3,
+    "news_feed_display": "off",
+    "num_personal_suggestions": 0,
+    "quick_links_options": 1,
+    "selected_feed_pivot": "myFeed",
+    "show_greeting": false,
+    "show_image_of_day": false
+  },
+  "payments": {
+    "can_make_payment_enabled": false
+  },
+  "privacy_sandbox": {
+    "first_party_sets_data_access_allowed_initialized": true
+  },
+  "signin": {
+    "allowed": false
+  },
+  "spellcheck": {
+    "dictionaries": ["en-US"]
+  },
+  "sync": {
+    "apps": false,
+    "autofill": false,
+    "bookmarks": false,
+    "collections": false,
+    "collections_edge_re_evaluated": false,
+    "collections_edge_supported": false,
+    "edge_account_type": 0,
+    "edge_wallet": false,
+    "edge_wallet_edge_supported": false,
+    "extensions": false,
+    "extensions_edge_supported": false,
+    "history_edge_supported": false,
+    "keep_everything_synced": false,
+    "passwords": false,
+    "preferences": false,
+    "requested": false,
+    "tabs": false,
+    "tabs_edge_supported": false,
+    "typed_urls": false
   }
 }
