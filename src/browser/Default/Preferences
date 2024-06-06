@@ -30,7 +30,9 @@
       "strict_inprivate": true
     }
   },
-  "enhanced_tracking_prevention": {"user_pref": 3},
+  "enhanced_tracking_prevention": {
+    "user_pref": 3
+  },
   "instrumentation": {
     "bookmark_bar": {
       "show_on_all_tabs": "chrome::ToggleBookmarkBarWhenVisible;false",
@@ -58,6 +60,16 @@
   },
   "payments": {
     "can_make_payment_enabled": false
+  },
+  "personalization_data_consent": {
+    "how_set": 15,
+    "needs_read_from_nurturing_database": false,
+    "noncontextual_impression_count": 1,
+    "noncontextual_opt_in_count": 0,
+    "noncontextual_previous_impression_time": "13362121033062659",
+    "personalization_in_context_consent_can_prompt": true,
+    "personalization_in_context_count": 0,
+    "when_set": "13362121033062659"
   },
   "privacy_sandbox": {
     "first_party_sets_data_access_allowed_initialized": true
@@ -88,5 +100,8 @@
     "tabs": false,
     "tabs_edge_supported": false,
     "typed_urls": false
+  },
+  "user_experience_metrics": {
+    "personalization_data_consent_enabled": false
   }
 }

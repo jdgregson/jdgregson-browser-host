@@ -33,7 +33,6 @@ if [ -d "/opt/$PKG_NAME" ]; then
 fi
 git clone "https://github.com/jdgregson/$PKG_NAME.git" "/opt/$PKG_NAME"
 chmod 755 "/opt/$PKG_NAME/src/browser/start.sh"
-chmod 755 "/opt/$PKG_NAME/src/browser/reset.sh"
 
 gecho "Generating self-signed TLS certificate..."
 mkdir "/opt/$PKG_NAME/src/nginx/ssl"
