@@ -4,8 +4,17 @@ CONTAINER_NAME=jdgregson-browser-container
 VNC_PASSWORD=password
 APP=edge
 
+if [[ "0" == "$(id -u)" ]]; then
+  echo "Refusing to run podman container as root, exiting..."
+  exit 1
+fi
+
 podman image prune -f
+
+echo "Stopping $CONTAINER_NAME..."
 podman rm $CONTAINER_NAME -f
+
+echo "Starting $CONTAINER_NAME..."
 podman run \
   -d \
   --rm \
