@@ -3,6 +3,7 @@
 PODMAN_USER="jdgregson-browser-user"
 SVC_HOST_NAME="browser.jdgregson.com"
 PKG_NAME="jdgregson-browser-host"
+TZ="America/Los_Angeles"
 
 # Green and red echo
 gecho() { echo -e "\033[1;32m$1\033[0m"; }
@@ -12,6 +13,9 @@ if [ ! -f "/etc/lsb-release" ] || [ -z "$(grep '22.04' /etc/lsb-release)" ]; the
     recho "ERROR: $PKG_NAME only supports Ubuntu Server 22.04"
     exit 1
 fi
+
+gecho "Setting time zone to $TZ..."
+timedatectl set-timezone "$TZ"
 
 gecho "Installing updates and dependencies..."
 apt-get update
