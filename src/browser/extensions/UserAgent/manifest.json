@@ -8,7 +8,11 @@
   ],
   "declarative_net_request": {
     "rule_resources": [
-      "rules.json"
+      {
+        "id": "ruleset",
+        "enabled": true,
+        "path": "rules.json"
+      }
     ]
   }
 }
