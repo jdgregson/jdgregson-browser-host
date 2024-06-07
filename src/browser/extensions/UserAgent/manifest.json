@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "UserAgent",
+  "version": "1.0",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      "rules.json"
+    ]
+  }
+}
