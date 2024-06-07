@@ -13,7 +13,7 @@
       ]
     },
     "condition": {
-      "urlFilter": "*://*/*",
+      "regexFilter": "*://*/*",
       "resourceTypes": ["main_frame", "sub_frame", "xmlhttprequest"]
     }
   }
