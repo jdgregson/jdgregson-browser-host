@@ -30,6 +30,7 @@
       "strict_inprivate": true
     }
   },
+  "edge_quick_search": {"show_mini_menu": false},
   "enhanced_tracking_prevention": {
     "user_pref": 3
   },
@@ -66,10 +67,11 @@
     "needs_read_from_nurturing_database": false,
     "noncontextual_impression_count": 1,
     "noncontextual_opt_in_count": 0,
-    "noncontextual_previous_impression_time": "13362121033062659",
-    "personalization_in_context_consent_can_prompt": true,
+    "noncontextual_previous_impression_time": "13367487986446841",
+    "personalization_in_context_consent_can_prompt": false,
     "personalization_in_context_count": 0,
-    "when_set": "13362121033062659"
+    "personalization_in_context_has_prompted": false,
+    "when_set": "13367487986446841"
   },
   "privacy_sandbox": {
     "first_party_sets_data_access_allowed_initialized": true
@@ -102,6 +104,7 @@
     "typed_urls": false
   },
   "user_experience_metrics": {
-    "personalization_data_consent_enabled": false
+    "personalization_data_consent_enabled": false,
+    "personalization_data_consent_enabled_last_known_value": false
   }
 }
