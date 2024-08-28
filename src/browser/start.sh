@@ -11,8 +11,7 @@ fi
 
 podman image prune -f
 
-echo "Stopping $CONTAINER_NAME..."
-podman rm $CONTAINER_NAME -f
+/opt/jdgregson-browser-host/src/browser/stop.sh
 
 echo "Starting $CONTAINER_NAME..."
 podman run \

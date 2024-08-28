@@ -51,16 +51,38 @@ openssl req \
   -nodes \
   -subj "/C=US/ST=Washington/L=Seattle/O=jdgregson/OU=Infrastructure Engineering/CN=$SVC_HOST_NAME"
 
-gecho "Configuring services..."
+gecho "Configuring Nginx service..."
 systemctl stop nginx
 rm "/etc/nginx/nginx.conf"
 ln -T "/opt/$PKG_NAME/src/nginx/nginx.conf" "/etc/nginx/nginx.conf"
 systemctl start nginx
 
+gecho "Configuring browser service..."
+cat << EOF > /etc/systemd/system/browser.service
+[Unit]
+Description=jdgregson-browser-host browser service
+After=network.target
+
+[Service]
+Type=oneshot
+User=jdgregson-browser-user
+ExecStart=/opt/jdgregson-browser-host/src/browser/start.sh
+ExecStop=/opt/jdgregson-browser-host/src/browser/stop.sh
+RemainAfterExit=yes
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+
 gecho "Starting browser..."
-sudo su "$PODMAN_USER" --shell /bin/bash --login -c "/opt/$PKG_NAME/src/browser/start.sh"
-cron_line="0  4    * * *   $PODMAN_USER    /opt/$PKG_NAME/src/browser/start.sh"
-if [[ -z "$(grep "$PKG_NAME" /etc/crontab)" ]]; then
+systemctl enable browser
+systemctl start browser
+
+gecho "Enabling browser auto-restart..."
+cron_line="0  4    * * *   root    systemctl stop browser && systemctl start browser"
+if [[ -z "$(grep "stop browser" /etc/crontab)" ]]; then
     echo "$cron_line" >> /etc/crontab
 fi
 
