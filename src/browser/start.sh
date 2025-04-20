@@ -19,11 +19,15 @@ podman image prune -f
 
 echo "Starting $CONTAINER_NAME..."
 podman run \
-  -d \
   --rm \
-  --name $CONTAINER_NAME \
-  --shm-size=4g \
+  -d \
   --network kasm-bridge \
+  --name "$CONTAINER_NAME" \
+  --shm-size=4g \
+  --dns 1.1.1.1 \
+  --dns 8.8.8.8 \
+  --dns-opt edns0 \
+  --dns-opt trust-ad \
   -p 127.0.0.1:6901:6901 \
   -e VNC_PW=$VNC_PASSWORD \
   -e APP_ARGS="--no-default-browser-check --no-first-run --start-maximized --load-extension=/home/kasm-user/extensions/extension" \

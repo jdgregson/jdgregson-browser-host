@@ -45,6 +45,7 @@ cat > ~/.config/cni/net.d/kasm-bridge.conflist << EOF
       "isGateway": true,
       "ipMasq": true,
       "ipam": {
+        "routes": [{"dst": "0.0.0.0/0"}],
         "type": "host-local",
         "subnet": "10.88.42.0/24"
       }
@@ -111,8 +112,12 @@ if [[ -z "$(grep "stop browser" /etc/crontab)" ]]; then
 fi
 
 gecho "Setting firewall rules..."
-ufw deny 5000
-ufw deny 6901
+ufw allow in on lo proto tcp to 127.0.0.1 port 6901
+ufw allow in on cni-podman0
+ufw allow out on cni-podman0
+ufw route allow out on cni-podman0 proto tcp to any port 443
+ufw route allow out on cni-podman0 proto udp to any port 53
+ufw --force enable
 
 if [[ "${1}" ]]; then
     if [[ -z "$(which cloudflared)" ]]; then
