@@ -19,8 +19,8 @@ podman image prune -f
 
 echo "Starting $CONTAINER_NAME..."
 podman run \
-  --rm \
   -d \
+  --replace \
   --network kasm-bridge \
   --name "$CONTAINER_NAME" \
   --shm-size=4g \

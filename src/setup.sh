@@ -9,8 +9,8 @@ TZ="America/Los_Angeles"
 gecho() { echo -e "\033[1;32m$1\033[0m"; }
 recho() { echo -e "\033[1;31m$1\033[0m"; }
 
-if [ ! -f "/etc/lsb-release" ] || [ -z "$(grep '22.04' /etc/lsb-release)" ]; then
-    recho "ERROR: $PKG_NAME only supports Ubuntu Server 22.04"
+if [ ! -f "/etc/lsb-release" ] || [ -z "$(grep '24.04' /etc/lsb-release)" ]; then
+    recho "ERROR: $PKG_NAME only supports Ubuntu Server 24.04"
     exit 1
 fi
 
@@ -31,30 +31,9 @@ if [ ! -d "/home/$PODMAN_USER" ]; then
 fi
 loginctl enable-linger "$PODMAN_USER"
 
-gecho "Configuring Podman CNI networks..."
-sudo -u "$PODMAN_USER" bash << EONET
-mkdir -p ~/.config/cni/net.d
-cat > ~/.config/cni/net.d/kasm-bridge.conflist << EOF
-{
-  "cniVersion": "0.4.0",
-  "name": "kasm-bridge",
-  "plugins": [
-    {
-      "type": "bridge",
-      "bridge": "cni-podman0",
-      "isGateway": true,
-      "ipMasq": true,
-      "ipam": {
-        "routes": [{"dst": "0.0.0.0/0"}],
-        "type": "host-local",
-        "subnet": "10.88.42.0/24"
-      }
-    }
-  ]
-}
-EOF
-podman network create kasm-bridge &>/dev/null || true
-EONET
+gecho "Configuring Podman network..."
+sudo -u "$PODMAN_USER" podman network create kasm-bridge --subnet 10.88.42.0/24 &>/dev/null || true
+sudo -u "$PODMAN_USER" podman network reload &>/dev/null
 
 gecho "Downloading $PKG_NAME..."
 if [ -d "/opt/$PKG_NAME" ]; then
@@ -112,11 +91,8 @@ if [[ -z "$(grep "stop browser" /etc/crontab)" ]]; then
 fi
 
 gecho "Setting firewall rules..."
-ufw allow in on lo proto tcp to 127.0.0.1 port 6901
-ufw allow in on cni-podman0
-ufw allow out on cni-podman0
-ufw route allow out on cni-podman0 proto tcp to any port 443
-ufw route allow out on cni-podman0 proto udp to any port 53
+ufw allow 6901/tcp
+ufw allow in on lo
 ufw --force enable
 
 if [[ "${1}" ]]; then
