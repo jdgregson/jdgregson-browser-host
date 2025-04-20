@@ -2,15 +2,19 @@
 
 CONTAINER_NAME=jdgregson-browser-container
 VNC_PASSWORD=password
-APP=edge
+APP=kasmweb/edge:1.17.0-rolling-daily
 
 if [[ "0" == "$(id -u)" ]]; then
   echo "Refusing to run podman container as root, exiting..."
   exit 1
 fi
 
-podman image prune -f
+if ! podman network exists kasm-bridge; then
+  echo "Network kasm-bridge does not exist. Please run the setup script first."
+  exit 1
+fi
 
+podman image prune -f
 /opt/jdgregson-browser-host/src/browser/stop.sh
 
 echo "Starting $CONTAINER_NAME..."
@@ -19,10 +23,11 @@ podman run \
   --rm \
   --name $CONTAINER_NAME \
   --shm-size=4g \
+  --network kasm-bridge \
   -p 127.0.0.1:6901:6901 \
   -e VNC_PW=$VNC_PASSWORD \
   -e APP_ARGS="--no-default-browser-check --no-first-run --start-maximized --load-extension=/home/kasm-user/extensions/extension" \
   -v /opt/jdgregson-browser-host/src/browser/extensions:/home/kasm-user/extensions \
   -v /opt/jdgregson-browser-host/src/browser/policies:/etc/opt/edge/policies/managed \
   -v /opt/jdgregson-browser-host/src/browser/Default:/home/kasm-default-profile/.config/microsoft-edge/Default \
-  docker.io/kasmweb/$APP:1.15.0-rolling
+  docker.io/$APP
