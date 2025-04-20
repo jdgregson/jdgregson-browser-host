@@ -93,6 +93,9 @@ fi
 gecho "Setting firewall rules..."
 ufw allow 6901/tcp
 ufw allow in on lo
+ufw allow out 53/udp
+ufw allow out 53/tcp
+ufw allow out 443/tcp
 ufw --force enable
 
 if [[ "${1}" ]]; then
