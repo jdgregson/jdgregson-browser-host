@@ -9,8 +9,8 @@ if [[ "0" == "$(id -u)" ]]; then
   exit 1
 fi
 
-if ! podman network exists kasm-bridge; then
-  echo "Network kasm-bridge does not exist. Please run the setup script first."
+if ! podman network exists browser-bridge; then
+  echo "Network browser-bridge does not exist. Please run the setup script first."
   exit 1
 fi
 
@@ -21,11 +21,14 @@ echo "Starting $CONTAINER_NAME..."
 podman run \
   -d \
   --replace \
-  --network kasm-bridge \
+  --network browser-bridge \
+  --mtu 1450 \
   --name "$CONTAINER_NAME" \
   --shm-size=4g \
   --dns 1.1.1.1 \
   --dns 8.8.8.8 \
+  --dns-opt single-request \
+  --dns-opt timeout:1 \
   --dns-opt edns0 \
   --dns-opt trust-ad \
   -p 127.0.0.1:6901:6901 \

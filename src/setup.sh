@@ -32,8 +32,10 @@ fi
 loginctl enable-linger "$PODMAN_USER"
 
 gecho "Configuring Podman network..."
-sudo -u "$PODMAN_USER" podman network create kasm-bridge --subnet 10.88.42.0/24 &>/dev/null || true
-sudo -u "$PODMAN_USER" podman network reload &>/dev/null
+sudo -u "$PODMAN_USER" podman network create \
+  --subnet 10.99.42.0/24 \
+  --opt "mtu=1500" \
+  browser-bridge &>/dev/null || true
 
 gecho "Downloading $PKG_NAME..."
 if [ -d "/opt/$PKG_NAME" ]; then
@@ -91,11 +93,14 @@ if [[ -z "$(grep "stop browser" /etc/crontab)" ]]; then
 fi
 
 gecho "Setting firewall rules..."
-ufw allow 6901/tcp
-ufw allow in on lo
+ufw allow out 7844/udp
+ufw allow out 2408/tcp
 ufw allow out 53/udp
+ufw allow 6901/tcp in on lo
+ufw allow in on lo
 ufw allow out 53/tcp
 ufw allow out 443/tcp
+ufw allow in proto udp from any to any port 53
 ufw --force enable
 
 if [[ "${1}" ]]; then
@@ -109,5 +114,8 @@ if [[ "${1}" ]]; then
     else
         cloudflared service uninstall
     fi
-    cloudflared service install $1
+    cloudflared service install $1 \
+      --protocol quic \
+      --heartbeat-interval 5s \
+      --no-autoupdate
 fi
