@@ -22,7 +22,6 @@ podman run \
   -d \
   --replace \
   --network browser-bridge \
-  --mtu 1450 \
   --name "$CONTAINER_NAME" \
   --shm-size=4g \
   --dns 1.1.1.1 \
