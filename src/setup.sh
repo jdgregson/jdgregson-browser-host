@@ -34,10 +34,10 @@ loginctl enable-linger "$PODMAN_USER"
 gecho "Configuring Podman CNI networks..."
 sudo -u "$PODMAN_USER" bash << EONET
 mkdir -p ~/.config/cni/net.d
-cat > ~/.config/cni/net.d/kasm-bridge.conflist << EOF
+cat > ~/.config/cni/net.d/browser-bridge.conflist << EOF
 {
   "cniVersion": "0.4.0",
-  "name": "kasm-bridge",
+  "name": "browser-bridge",
   "plugins": [
     {
       "type": "bridge",
@@ -53,7 +53,7 @@ cat > ~/.config/cni/net.d/kasm-bridge.conflist << EOF
   ]
 }
 EOF
-podman network create kasm-bridge &>/dev/null || true
+podman network create browser-bridge &>/dev/null || true
 EONET
 
 gecho "Downloading $PKG_NAME..."
