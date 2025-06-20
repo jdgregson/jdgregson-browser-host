@@ -17,6 +17,9 @@ fi
 podman image prune -f
 /opt/jdgregson-browser-host/src/browser/stop.sh
 
+echo "Updating $CONTAINER_NAME..."
+podman pull docker.io/$APP
+
 echo "Starting $CONTAINER_NAME..."
 podman run \
   --rm \
